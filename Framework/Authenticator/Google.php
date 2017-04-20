@@ -16,23 +16,23 @@ class Google extends AbstractAuthenticator
     protected $objectManager;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface|\Magento\Store\Model\Store
+     * @var \Magento\Backend\Model\Auth\StorageInterface
      */
-    protected $storeManager;
+    protected $authStorage;
 
     /**
      * Google constructor.
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Store\Model\StoreManagerInterface|\Magento\Store\Model\Store $storeManager
+     * @param \Magento\Backend\Model\Auth|\Cadence\Heimdall\Model\Backend\Auth $auth
      * @param array $data
      */
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Backend\Model\Auth\StorageInterface $authStorage,
         array $data = []
     ) {
         $this->objectManager = $objectManager;
-        $this->storeManager = $storeManager;
+        $this->authStorage = $authStorage;
         $this->tfa = $this->createTfa();
     }
 
@@ -66,7 +66,7 @@ class Google extends AbstractAuthenticator
 
     public function getQrCode(string $secret) : string
     {
-        return $this->tfa->getQRCodeImageAsDataUri("MFA QR", $secret);
+        return $this->tfa->getQRCodeImageAsDataUri($this->getAuthLabel(), $secret);
     }
 
     /**
@@ -83,10 +83,16 @@ class Google extends AbstractAuthenticator
      */
     public function createTfa()
     {
-        $url = $this->storeManager->getStore()->getCurrentUrl();
-        $host = parse_url($url, PHP_URL_HOST) ?? "Magento 2 Admin";
         return $this->objectManager->create('\RobThree\Auth\TwoFactorAuth', [
-            $host
+            $this->getAuthLabel()
         ]);
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getAuthLabel()
+    {
+        return $this->authStorage->getLoginLabel();
     }
 }

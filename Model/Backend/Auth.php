@@ -47,6 +47,11 @@ Class Auth extends \Magento\Backend\Model\Auth
     protected $sessionsManager;
 
     /**
+     * @var \Magento\Store\Model\StoreManagerInterface|\Magento\Store\Model\Store
+     */
+    protected $storeManager;
+
+    /**
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Backend\Helper\Data $backendData
      * @param \Magento\Backend\Model\Auth\StorageInterface $authStorage
@@ -68,6 +73,7 @@ Class Auth extends \Magento\Backend\Model\Auth
         $this->mfaAuthenticator = $objectManager->get('\Cadence\Heimdall\Framework\Authenticator\Google');
         $this->scopeConfig = $objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->sessionsManager = $objectManager->get('\Magento\Security\Model\AdminSessionsManager');
+        $this->storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
 
 
         parent::__construct($eventManager, $backendData, $authStorage, $credentialStorage, $coreConfig, $modelFactory);
@@ -228,6 +234,7 @@ Class Auth extends \Magento\Backend\Model\Auth
     {
         $this->getAuthStorage()->setLoginCandidate($user);
         $this->getAuthStorage()->setCandidateTime(time());
+        $this->getAuthStorage()->setLoginLabel($this->getMfaLabel());
         return $this;
     }
 
@@ -260,5 +267,16 @@ Class Auth extends \Magento\Backend\Model\Auth
     public function isMfaEnabled()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_MFA_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES) == 1;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMfaLabel()
+    {
+        $url = $this->storeManager->getStore()->getCurrentUrl();
+        $host = parse_url($url, PHP_URL_HOST) ?? "Magento 2 Admin";
+        $candidate = $this->getLoginCandidate() ?? "Unknown";
+        return $host . ' - ' . $candidate->getEmail();
     }
 }
