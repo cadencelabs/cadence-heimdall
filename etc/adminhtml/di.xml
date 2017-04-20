@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Backend\Model\Auth" type="Cadence\Heimdall\Model\Backend\Auth" />
+    <preference for="Magento\Backend\App\Action\Plugin\Authentication" type="Cadence\Heimdall\Plugin\Backend\Authentication" />
+    <type name="Cadence\Heimdall\Framework\Authenticator\Google">
+    </type>
+</config>
