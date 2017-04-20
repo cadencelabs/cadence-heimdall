@@ -1,0 +1,25 @@
+{
+    "name": "cadence/module-heimdall",
+    "description": "Magento 2 Multi-Factor Authentication",
+    "type": "magento2-module",
+    "license": [
+        "proprietary"
+    ],
+    "authors":[
+        {
+            "name":"Alan Barber",
+            "email":"alan@cadence-labs.com"
+        }
+    ],
+    "require": {
+        "robthree/twofactorauth": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Cadence\\Heimdall\\": ""
+        }
+    }
+}
