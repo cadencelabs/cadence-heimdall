@@ -1,0 +1,21 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Config/etc/system_file.xsd">
+    <system>
+        <tab id="cadence" translate="label" sortOrder="200">
+            <label>Cadence Labs</label>
+        </tab>
+        <section id="heimdall" translate="label" type="text" sortOrder="140" showInDefault="1">
+            <class>separator-top</class>
+            <label>Heimdall Multi-Factor Authentication</label>
+            <tab>cadence</tab>
+            <resource>Cadence_Heimdall::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1">
+                <label>General Settings</label>
+                <comment><![CDATA[Configure general extension settings as well as enable/disable functionality.]]></comment>
+                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
