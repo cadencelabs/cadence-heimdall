@@ -42,7 +42,7 @@ class Index extends \Magento\Backend\Controller\Adminhtml\Auth
         /** @var \Cadence\Heimdall\Model\Backend\Auth $auth */
         $auth = $this->_auth;
 
-        if (!$auth->getLoginCandidate()) {
+        if (!$auth->getLoginCandidate() || $auth->checkCandidateExpired()) {
             $this->messageManager->addError(__("Login first before attempting MFA."));
             return $this->getRedirect($this->_backendUrl->getStartupPageUrl());
         }

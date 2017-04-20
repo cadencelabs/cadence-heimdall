@@ -11,7 +11,15 @@ use Magento\Framework\Phrase;
 
 Class Auth extends \Magento\Backend\Model\Auth
 {
+    /**
+     * @const Is MFA enabled
+     */
     const XML_PATH_MFA_ENABLED = 'heimdall/general/active';
+
+    /**
+     * @const 15 minute window where MFA can be applied after logging in
+     */
+    const CANDIDATE_TIMEOUT = 900;
 
     /**
      * @var \Magento\Framework\App\RequestInterface
@@ -216,10 +224,34 @@ Class Auth extends \Magento\Backend\Model\Auth
      * @param \Magento\Backend\Model\Auth\Credential\StorageInterface $user
      * @return $this
      */
-    public function setLoginCandidate(\Magento\Backend\Model\Auth\Credential\StorageInterface $user)
+    public function setLoginCandidate($user)
     {
         $this->getAuthStorage()->setLoginCandidate($user);
+        $this->getAuthStorage()->setCandidateTime(time());
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkCandidateExpired()
+    {
+        if (!$this->getLoginCandidate()) {
+            return false;
+        }
+        if (!$this->getAuthStorage()->getCandidateTime() || $this->isCandidateExpired()) {
+            $this->setLoginCandidate(null);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCandidateExpired()
+    {
+        return time() > $this->getAuthStorage()->getCandidateTime() + self::CANDIDATE_TIMEOUT;
     }
 
     /**
