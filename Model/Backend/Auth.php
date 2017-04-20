@@ -146,6 +146,26 @@ Class Auth extends \Magento\Backend\Model\Auth
     }
 
     /**
+     * @param \Magento\User\Model\User|\Magento\Backend\Model\Auth\Credential\StorageInterface $user
+     * @return $this
+     * @throws MfaSecret
+     */
+    public function refreshMfa(\Magento\Backend\Model\Auth\Credential\StorageInterface $user)
+    {
+        // Set the user to context of who to login
+        $this->setLoginCandidate($user);
+
+        $request = $this->_request;
+        $request->setForwarded(true)
+            ->setRouteName('adminhtml')
+            ->setModuleName('heimdall')
+            ->setControllerName('secret')
+            ->setActionName('refresh')
+            ->setDispatched(false);
+        return $this;
+    }
+
+    /**
      * @return Auth
      */
     public function handleMfa()
@@ -155,6 +175,8 @@ Class Auth extends \Magento\Backend\Model\Auth
 
         if (!$user->getData('heimdall_secret')) {
             return $this->setupMfa($user);
+        } elseif (!$this->hasMfaSession()){
+            return $this->refreshMfa($user);
         } else {
             return $this->continueLogin();
         }
@@ -267,6 +289,14 @@ Class Auth extends \Magento\Backend\Model\Auth
     public function isMfaEnabled()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_MFA_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES) == 1;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasMfaSession()
+    {
+        return false;
     }
 
     /**

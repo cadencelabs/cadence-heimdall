@@ -81,10 +81,11 @@ class Secret extends \Magento\Backend\Block\Template
 
 
     /**
+     * @param string $action
      * @return string
      */
-    public function getSecretUrl()
+    public function getSecretUrl($action = 'index')
     {
-        return $this->_urlBuilder->getUrl('heimdall/secret/index');
+        return $this->_urlBuilder->getUrl('heimdall/secret/' . $action);
     }
 }
