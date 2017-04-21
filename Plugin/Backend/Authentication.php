@@ -59,8 +59,7 @@ class Authentication extends \Magento\Backend\App\Action\Plugin\Authentication
         $requestedActionName = $request->getActionName();
         if (in_array($requestedActionName, $this->_openActions)) {
             return true;
-        }
-        if ($request->getModuleName() == 'heimdall' && $requestedActionName != 'reset') {
+        } elseif ($request->getModuleName() == 'heimdall' && in_array($requestedActionName, ['index', 'refresh'])) {
             return true;
         }
         return false;

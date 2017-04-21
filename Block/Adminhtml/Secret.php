@@ -88,4 +88,9 @@ class Secret extends \Magento\Backend\Block\Template
     {
         return $this->_urlBuilder->getUrl('heimdall/secret/' . $action);
     }
+
+    public function renderHasCompletedMfa()
+    {
+        echo "IN HERE"; exit;
+    }
 }

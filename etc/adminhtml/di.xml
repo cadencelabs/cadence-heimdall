@@ -13,4 +13,7 @@
     <type name="\Magento\User\Block\User\Edit">
         <plugin name="userEditBeforeView" type="Cadence\Heimdall\Plugin\UserEditBeforeView" />
     </type>
+    <type name="\Magento\Backend\Block\Widget\Grid\Column">
+        <plugin name="userGridBeforeColumn" type="Cadence\Heimdall\Plugin\UserGridBeforeColumn" />
+    </type>
 </config>

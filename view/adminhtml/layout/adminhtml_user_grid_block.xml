@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="permission.user.grid.columnSet">
+            <block class="Magento\Backend\Block\Widget\Grid\Column" as="heimdall_secret" name="heimdall.secret.complete">
+                <arguments>
+                    <argument name="header" xsi:type="string" translate="true">Has Completed MFA</argument>
+                    <argument name="sortable" xsi:type="string">true</argument>
+                    <argument name="index" xsi:type="string">heimdall_secret</argument>
+                    <argument name="frame_callback" xsi:type="string">Cadence\Heimdall\Block\Adminhtml\Secret::renderHasCompletedMfa</argument>
+                    <argument name="column_css_class" xsi:type="string">col-mfa</argument>
+                    <argument name="header_css_class" xsi:type="string">col-mfa</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>
