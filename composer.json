@@ -1,5 +1,5 @@
 {
-    "name": "cadence/module-heimdall",
+    "name": "cadence-heimdall",
     "description": "Magento 2 Multi-Factor Authentication",
     "type": "magento2-module",
     "license": [
