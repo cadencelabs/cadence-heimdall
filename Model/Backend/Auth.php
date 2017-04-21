@@ -7,7 +7,9 @@ namespace Cadence\Heimdall\Model\Backend;
 use Cadence\Heimdall\Framework\Exception\MfaSecret;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Exception\Plugin\AuthenticationException as PluginAuthenticationException;
+use Magento\Framework\Math\Random;
 use Magento\Framework\Phrase;
+use Magento\Framework\Stdlib\Cookie\PublicCookieMetadata;
 
 Class Auth extends \Magento\Backend\Model\Auth
 {
@@ -20,6 +22,16 @@ Class Auth extends \Magento\Backend\Model\Auth
      * @const 15 minute window where MFA can be applied after logging in
      */
     const CANDIDATE_TIMEOUT = 900;
+
+    /**
+     * @const Cookie name for
+     */
+    const COOKIE_REMEMBER_NAME = 'heimdall_mfa';
+
+    /**
+     * @const Remember the MFA for 90 days
+     */
+    const COOKIE_REMEMBER_LENGTH = 7776000;
 
     /**
      * @var \Magento\Framework\App\RequestInterface
@@ -52,6 +64,21 @@ Class Auth extends \Magento\Backend\Model\Auth
     protected $storeManager;
 
     /**
+     * @var \Magento\Framework\Stdlib\CookieManagerInterface
+     */
+    protected $cookieManager;
+
+    /**
+     * @var \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory
+     */
+    protected $cookieMetadataFactory;
+
+    /**
+     * @var \Magento\Framework\Session\SessionManagerInterface
+     */
+    protected $sessionManager;
+
+    /**
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Backend\Helper\Data $backendData
      * @param \Magento\Backend\Model\Auth\StorageInterface $authStorage
@@ -74,6 +101,9 @@ Class Auth extends \Magento\Backend\Model\Auth
         $this->scopeConfig = $objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->sessionsManager = $objectManager->get('\Magento\Security\Model\AdminSessionsManager');
         $this->storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->cookieManager = $objectManager->get('\Magento\Framework\Stdlib\CookieManagerInterface');
+        $this->cookieMetadataFactory = $objectManager->get('\Magento\Framework\Stdlib\Cookie\CookieMetadataFactory');
+        $this->sessionManager = $objectManager->get('\Magento\Framework\Session\SessionManagerInterface');
 
 
         parent::__construct($eventManager, $backendData, $authStorage, $credentialStorage, $coreConfig, $modelFactory);
@@ -175,7 +205,7 @@ Class Auth extends \Magento\Backend\Model\Auth
 
         if (!$user->getData('heimdall_secret')) {
             return $this->setupMfa($user);
-        } elseif (!$this->hasMfaSession()){
+        } elseif (!$this->hasMfaSession($user)){
             return $this->refreshMfa($user);
         } else {
             return $this->continueLogin();
@@ -215,6 +245,36 @@ Class Auth extends \Magento\Backend\Model\Auth
         }
 
         $this->sessionsManager->processLogin();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function rememberLogin()
+    {
+        /** @var PublicCookieMetadata $metadata */
+        $metadata = $this->cookieMetadataFactory->createPublicCookieMetadata();
+        $metadata->setDuration(self::COOKIE_REMEMBER_LENGTH)
+            ->setPath($this->sessionManager->getCookiePath())
+            ->setDomain($this->sessionManager->getCookieDomain())
+            ->setHttpOnly(true)
+            ->setSecure($this->storeManager->getStore()->isCurrentlySecure());
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        /** @var Random $random */
+        $random = $objectManager->get('\Magento\Framework\Math\Random');
+        $mfaCookie = $objectManager->create('\Cadence\Heimdall\Model\User\Cookie');
+
+        // Save the random code
+        $mfaCookie->setData([
+            'user_id' => $this->getUser()->getId(),
+            'code' => $random->getRandomString(32)
+        ])->save();
+
+        $this->cookieManager->setPublicCookie(self::COOKIE_REMEMBER_NAME, $mfaCookie->getData('code'), $metadata);
 
         return $this;
     }
@@ -292,11 +352,22 @@ Class Auth extends \Magento\Backend\Model\Auth
     }
 
     /**
+     * @param \Magento\Backend\Model\Auth\Credential\StorageInterface|\Magento\User\Model\User $user
      * @return bool
      */
-    public function hasMfaSession()
+    public function hasMfaSession($user)
     {
-        return false;
+        $cookie = $this->cookieManager->getCookie(self::COOKIE_REMEMBER_NAME);
+        if (!$cookie) {
+            return false;
+        }
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        /** @var \Cadence\Heimdall\Model\Resource\User\Cookie\Collection $collection */
+        $collection = $objectManager->create('\Cadence\Heimdall\Model\Resource\User\Cookie\Collection');
+        $collection->addFieldToFilter('user_id', $user->getId())
+            ->addFieldToFilter('code', $cookie);
+
+        return $collection->getSize() > 0;
     }
 
     /**

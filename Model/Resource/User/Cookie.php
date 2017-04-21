@@ -2,11 +2,11 @@
 /**
  * @author Alan Barber <alan@cadence-labs.com>
  */
-namespace Cadence\Heimdall\Model\Resource\User\Cookie;
+namespace Cadence\Heimdall\Model\Resource\User;
 
 use \Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
-class News extends AbstractDb
+class Cookie extends AbstractDb
 {
     /**
      * Define main table

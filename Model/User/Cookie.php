@@ -2,11 +2,9 @@
 /**
  * @author Alan Barber <alan@cadence-labs.com>
  */
-namespace Cadence\Heimdall\User;
+namespace Cadence\Heimdall\Model\User;
 
-use Magento\Framework\Model\AbstractModel;
-
-class Cookie extends AbstractModel
+class Cookie extends \Magento\Framework\Model\AbstractModel
 {
     /**
      * Define resource model

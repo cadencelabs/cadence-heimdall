@@ -44,6 +44,10 @@ abstract class Secret extends \Magento\Backend\Controller\Adminhtml\Auth
         if ($auth->verifyMfaCode($code, $secret)) {
             $this->messageManager->addSuccess("Successfully verified your account!");
             $auth->completeLogin($secret);
+            $verificationData = $this->getRequest()->getPost('verification');
+            if (isset($verificationData['remember']) && $verificationData['remember']) {
+                $auth->rememberLogin();
+            }
             return $this->getRedirect($this->_backendUrl->getStartupPageUrl());
         } else {
             $this->messageManager->addError(__("Invalid verification code provided!"));
