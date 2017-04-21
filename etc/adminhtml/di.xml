@@ -10,4 +10,7 @@
     <preference for="Magento\Backend\App\Action\Plugin\Authentication" type="Cadence\Heimdall\Plugin\Backend\Authentication" />
     <type name="Cadence\Heimdall\Framework\Authenticator\Google">
     </type>
+    <type name="\Magento\User\Block\User\Edit">
+        <plugin name="userEditBeforeView" type="Cadence\Heimdall\Plugin\UserEditBeforeView" />
+    </type>
 </config>

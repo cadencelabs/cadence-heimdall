@@ -14,11 +14,6 @@ use Magento\Framework\Stdlib\Cookie\PublicCookieMetadata;
 Class Auth extends \Magento\Backend\Model\Auth
 {
     /**
-     * @const Is MFA enabled
-     */
-    const XML_PATH_MFA_ENABLED = 'heimdall/general/active';
-
-    /**
      * @const 15 minute window where MFA can be applied after logging in
      */
     const CANDIDATE_TIMEOUT = 900;
@@ -348,7 +343,8 @@ Class Auth extends \Magento\Backend\Model\Auth
      */
     public function isMfaEnabled()
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_MFA_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES) == 1;
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        return $objectManager->get('\Cadence\Heimdall\Helper\Settings')->isMfaEnabled();
     }
 
     /**

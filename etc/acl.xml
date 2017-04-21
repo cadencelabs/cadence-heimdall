@@ -9,6 +9,11 @@
                         </resource>
                     </resource>
                 </resource>
+                <resource id="Magento_Backend::system">
+                    <resource id="Magento_User::acl">
+                        <resource id="Cadence_Heimdall::backend_reset" title="Reset Heimdall MFA Secret For Users" translate="title" sortOrder="100" />
+                    </resource>
+                </resource>
             </resource>
         </resources>
     </acl>
