@@ -3,8 +3,9 @@
     "description": "Magento 2 Multi-Factor Authentication",
     "type": "magento2-module",
     "license": [
-        "proprietary"
+        "mit"
     ],
+    "version": "1.0.0",
     "authors":[
         {
             "name":"Alan Barber",
