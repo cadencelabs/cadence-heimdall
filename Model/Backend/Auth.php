@@ -374,6 +374,6 @@ Class Auth extends \Magento\Backend\Model\Auth
         $url = $this->storeManager->getStore()->getCurrentUrl();
         $host = parse_url($url, PHP_URL_HOST) ?? "Magento 2 Admin";
         $candidate = $this->getLoginCandidate() ?? "Unknown";
-        return $host . ' - ' . $candidate->getEmail();
+        return $host . ' - ' . (is_object($candidate) ? $candidate->getEmail() : $candidate );
     }
 }
