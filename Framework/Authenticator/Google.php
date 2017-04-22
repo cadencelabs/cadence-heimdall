@@ -40,7 +40,7 @@ class Google extends AbstractAuthenticator
      * @return string
      * @throws \RobThree\Auth\TwoFactorAuthException
      */
-    public function generateSecret() : string
+    public function generateSecret()
     {
         return $this->tfa->createSecret(160);
     }
@@ -50,7 +50,7 @@ class Google extends AbstractAuthenticator
      * @param string $secret
      * @return bool
      */
-    public function verifyCode(string $code, string $secret) : bool
+    public function verifyCode($code, $secret)
     {
         $code = str_replace(" ", "", $code);
         return $this->tfa->verifyCode($secret, $code);
@@ -59,12 +59,12 @@ class Google extends AbstractAuthenticator
     /**
      * @return bool
      */
-    public function supportsQrCode() : bool
+    public function supportsQrCode()
     {
         return true;
     }
 
-    public function getQrCode(string $secret) : string
+    public function getQrCode($secret)
     {
         return $this->tfa->getQRCodeImageAsDataUri($this->getAuthLabel(), $secret);
     }
@@ -73,7 +73,7 @@ class Google extends AbstractAuthenticator
      * @param string $secret
      * @return string
      */
-    public function getHumanSecret(string $secret) : string
+    public function getHumanSecret($secret)
     {
         return chunk_split($secret, 4, ' ');
     }

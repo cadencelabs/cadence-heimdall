@@ -23,7 +23,7 @@ class Refresh extends \Cadence\Heimdall\Controller\Adminhtml\Secret
 
         if ($this->getRequest()->getPost('verification')) {
             $verifyData = $this->getRequest()->getPost('verification');
-            $code = $verifyData['code'] ?? false;
+            $code = isset($verifyData['code']) ? $verifyData['code'] : false;
             if (!$code) {
                 $this->messageManager->addError(__("No verification code provided!"));
             } else {

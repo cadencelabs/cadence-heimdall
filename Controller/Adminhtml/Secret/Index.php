@@ -23,8 +23,8 @@ class Index extends \Cadence\Heimdall\Controller\Adminhtml\Secret
 
         if ($this->getRequest()->getPost('verification')) {
             $verifyData = $this->getRequest()->getPost('verification');
-            $secret = $verifyData['secret'] ?? false;
-            $code = $verifyData['code'] ?? false;
+            $secret = isset($verifyData['secret']) ? $verifyData['secret'] : false;
+            $code = isset($verifyData['code']) ? $verifyData['code'] : false;
             if (!$code) {
                 $this->messageManager->addError(__("No verification code provided!"));
             } else if (!$secret) {
