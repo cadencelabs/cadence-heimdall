@@ -83,9 +83,7 @@ class Google extends AbstractAuthenticator
      */
     public function createTfa()
     {
-        return $this->objectManager->create('\RobThree\Auth\TwoFactorAuth', [
-            $this->getAuthLabel()
-        ]);
+        return new \RobThree\Auth\TwoFactorAuth($this->getAuthLabel());
     }
 
     /**
