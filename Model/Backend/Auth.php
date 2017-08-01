@@ -358,8 +358,8 @@ Class Auth extends \Magento\Backend\Model\Auth
             return false;
         }
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        /** @var \Cadence\Heimdall\Model\Resource\User\Cookie\Collection $collection */
-        $collection = $objectManager->create('\Cadence\Heimdall\Model\Resource\User\Cookie\Collection');
+        /** @var \Cadence\Heimdall\Model\ResourceModel\User\Cookie\Collection $collection */
+        $collection = $objectManager->create('\Cadence\Heimdall\Model\ResourceModel\User\Cookie\Collection');
         $collection->addFieldToFilter('user_id', $user->getId())
             ->addFieldToFilter('code', $cookie);
 

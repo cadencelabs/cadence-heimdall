@@ -27,8 +27,8 @@ class Reset extends \Magento\Backend\App\AbstractAction
                 __("Successfully reset MFA secret for user {$user->getEmail()}. They will be prompted to connect a new mobile device on their next login.")
             );
 
-            /** @var \Cadence\Heimdall\Model\Resource\User\Cookie\Collection $collection */
-            $collection = $objectManager->create('\Cadence\Heimdall\Model\Resource\User\Cookie\Collection');
+            /** @var \Cadence\Heimdall\Model\ResourceModel\User\Cookie\Collection $collection */
+            $collection = $objectManager->create('\Cadence\Heimdall\Model\ResourceModel\User\Cookie\Collection');
             $collection->addFieldToFilter('user_id', $user->getId());
             /** @var \Cadence\Heimdall\Model\User\Cookie $userCookie */
             foreach($collection as $userCookie) {

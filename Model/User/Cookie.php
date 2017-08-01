@@ -11,6 +11,6 @@ class Cookie extends \Magento\Framework\Model\AbstractModel
      */
     protected function _construct()
     {
-        $this->_init('Cadence\Heimdall\Model\Resource\User\Cookie');
+        $this->_init('Cadence\Heimdall\Model\ResourceModel\User\Cookie');
     }
 }

@@ -2,7 +2,7 @@
 /**
  * @author Alan Barber <alan@cadence-labs.com>
  */
-namespace Cadence\Heimdall\Model\Resource\User;
+namespace Cadence\Heimdall\Model\ResourceModel\User;
 
 use \Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 

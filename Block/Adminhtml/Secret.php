@@ -91,6 +91,5 @@ class Secret extends \Magento\Backend\Block\Template
 
     public function renderHasCompletedMfa()
     {
-        echo "IN HERE"; exit;
     }
 }

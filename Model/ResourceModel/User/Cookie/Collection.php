@@ -2,7 +2,7 @@
 /**
  * @author Alan Barber <alan@cadence-labs.com>
  */
-namespace Cadence\Heimdall\Model\Resource\User\Cookie;
+namespace Cadence\Heimdall\Model\ResourceModel\User\Cookie;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
@@ -15,7 +15,7 @@ class Collection extends AbstractCollection
     {
         $this->_init(
             'Cadence\Heimdall\Model\User\Cookie',
-            'Cadence\Heimdall\Model\Resource\User\Cookie'
+            'Cadence\Heimdall\Model\ResourceModel\User\Cookie'
         );
     }
 }
